@@ -127,8 +127,19 @@ function getRecentEmail(auth) {
             console.log("The API returned an error: " + err);
             return;
           }
-          // console.log(response.data.payload);
-
+          var extractField = function(json, fieldName) {
+            return response["data"].payload.headers.filter(function(header) {
+              
+              return header.name === fieldName;
+            })[0].value;
+          };
+          var date = extractField(response, "Date");
+          var from = extractField(response, "From");
+          var subject = extractField(response, "Subject");
+        
+          console.log(date);
+          console.log(from);
+          console.log(subject);
 
           var parts = [response.data.payload];
 
@@ -145,27 +156,8 @@ function getRecentEmail(auth) {
                 wordwrap: 130
               });
               console.log(text);
-              
-            
-              // console.log(decodedPart);
-            
             }
           }          
-
-          // var extractField = function(json, fieldName) {
-          //   return response["data"].payload.headers.filter(function(header) {
-              
-          //     return header.name === fieldName;
-          //   })[0].value;
-          // };
-          // var date = extractField(response, "Date");
-          // var from = extractField(response, "From");
-          // var subject = extractField(response, "Subject");
-        
-          // console.log(date);
-          // console.log(from);
-          // console.log(subject);
-         
         }
       );
     }
