@@ -1,6 +1,20 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
+global.atob = require("atob");
+var htmlToText = require('html-to-text');
+
+/*
+* Estamos pegando apenas a utima mensagem. Porem, ele só é disparado uma vez.
+* TODO:Utilizar o Express <- Icaro
+* TODO: Criar um objeto "FilteredEmail" (criar uma modelzinha)
+* TODO: Retornar esse objeto na requisição
+* TODO: Criar ou utilizar algum metodo da API que faça um "push notification" 
+*/
+
+// - chegou uma msg!! toma aqui os ids!!
+// - vou pegar  o id e pesquisar no meu metodo getMessage para saber qual é a mensagem
+
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
@@ -113,21 +127,44 @@ function getRecentEmail(auth) {
             console.log("The API returned an error: " + err);
             return;
           }
-          //console.log(response["data"]);
+          // console.log(response.data.payload);
 
-          var extractField = function(json, fieldName) {
-            return response["data"].payload.headers.filter(function(header) {
+
+          var parts = [response.data.payload];
+
+          while (parts.length) {
+            var part = parts.shift();
+            if (part.parts) {
+              parts = parts.concat(part.parts);
+            }
+
+            if(part.mimeType === 'text/html') {
+              var decodedPart = decodeURIComponent(escape(atob(part.body.data.replace(/\-/g, '+').replace(/\_/g, '/'))));
               
-              return header.name === fieldName;
-            })[0].value;
-          };
-          var date = extractField(response, "Date");
-          var from = extractField(response, "From");
-          var subject = extractField(response, "Subject");
-          
-          console.log(date);
-          console.log(from);
-          console.log(subject);
+              var text = htmlToText.fromString(decodedPart, {
+                wordwrap: 130
+              });
+              console.log(text);
+              
+            
+              // console.log(decodedPart);
+            
+            }
+          }          
+
+          // var extractField = function(json, fieldName) {
+          //   return response["data"].payload.headers.filter(function(header) {
+              
+          //     return header.name === fieldName;
+          //   })[0].value;
+          // };
+          // var date = extractField(response, "Date");
+          // var from = extractField(response, "From");
+          // var subject = extractField(response, "Subject");
+        
+          // console.log(date);
+          // console.log(from);
+          // console.log(subject);
          
         }
       );
