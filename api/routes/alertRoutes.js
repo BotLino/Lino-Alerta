@@ -1,7 +1,13 @@
-// "use strict";
-// module.exports = function(app) {
-//   var alert = require("../controllers/alertController");
+"use strict";
+module.exports = function(app) {
+  var alert = require("../controllers/alertController");
 
-//   // todoList Routes
-//   app.route("/email").get(alert.getRecentEmail);
-// };
+  app.get("/test", async (req, res, next) => {
+    try {
+      const newAlert = await alert.callGetRecentEmailId();
+      res.json(newAlert);
+    } catch (e) {
+      next(e);
+    }
+  });
+};

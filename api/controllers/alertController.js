@@ -1,3 +1,4 @@
+"use strict";
 const fs = require("mz/fs");
 const readline = require("readline");
 const { google } = require("googleapis");
@@ -154,8 +155,6 @@ function parseEmail(response) {
       alert.subject = subject;
       alert.message = message;
 
-      console.log("LINHA 151:", alert);
-
       return alert;
     }
   }
@@ -166,10 +165,24 @@ async function callGetRecentEmailId() {
     var credentials = JSON.parse(readCredentials());
     var auth = authorize(credentials);
     const alert = await readMessage(auth);
-    parseEmail(alert);
+    const result = await parseEmail(alert);
+    await console.log("result :", result);
+    return await result;
   } catch (e) {
     console.log(e);
   }
 }
 
 callGetRecentEmailId();
+
+module.exports = {
+  callGetRecentEmailId: callGetRecentEmailId,
+  readCredentials: readCredentials,
+  parseEmail: parseEmail,
+  readMessage: readMessage,
+  getRecentEmail: getRecentEmail,
+  getRecentEmailId: getRecentEmailId,
+  getNewToken: getNewToken,
+  authorize: authorize,
+  readCredentials: readCredentials
+};
