@@ -1,60 +1,45 @@
-const fs = require("fs");
+const fs = require("mz/fs");
 const readline = require("readline");
 const { google } = require("googleapis");
 global.atob = require("atob");
 var htmlToText = require("html-to-text");
+var Alert = require("../models/alertModel").Alert;
 
-/*
-* Estamos pegando apenas a utima mensagem. Porem, ele só é disparado uma vez.
-* TODO:Utilizar o Express <- Icaro
-* TODO: Criar um objeto "FilteredEmail" (criar uma modelzinha)
-* TODO: Retornar esse objeto na requisição
-* TODO: Criar ou utilizar algum metodo da API que faça um "push notification" 
-*/
-
-// - chegou uma msg!! toma aqui os ids!!
-// - vou pegar  o id e pesquisar no meu metodo getMessage para saber qual é a mensagem
-
-// If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 const TOKEN_PATH = "./api/resources/token.json";
+const CREDENTIALS_PATH = "./api/resources/credentials.json";
 
-// Load client secrets from a local file.
-fs.readFile("./api/resources/credentials.json", (err, content) => {
-  if (err) return console.log("Error loading client secret file:", err);
-  // Authorize a client with credentials, then call the Gmail API.
-  authorize(JSON.parse(content), getRecentEmail);
-});
-
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
-function authorize(credentials, callback) {
-  const { client_secret, client_id, redirect_uris } = credentials.installed;
-  const oAuth2Client = new google.auth.OAuth2(
-    client_id,
-    client_secret,
-    redirect_uris[0]
-  );
-
-  // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getNewToken(oAuth2Client, callback);
-    oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client);
-  });
+function readCredentials() {
+  try {
+    var content = fs.readFileSync(CREDENTIALS_PATH, err => {
+      if (err) return console.log("Error loading client secret file:", err);
+    });
+    return content;
+  } catch (e) {
+    return console.log(e);
+  }
 }
 
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getNewToken(oAuth2Client, callback) {
+function authorize(credentials) {
+  try {
+    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id,
+      client_secret,
+      redirect_uris[0]
+    );
+
+    var tkn = fs.readFileSync(TOKEN_PATH, err => {
+      if (err) return getNewToken(oAuth2Client);
+    });
+    oAuth2Client.setCredentials(JSON.parse(tkn));
+    return oAuth2Client;
+  } catch (e) {
+    return console.log(e);
+  }
+}
+
+function getNewToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES
@@ -74,102 +59,117 @@ function getNewToken(oAuth2Client, callback) {
         if (err) return console.error(err);
         console.log("Token stored to", TOKEN_PATH);
       });
-      callback(oAuth2Client);
     });
   });
 }
 
-/**
- * Lists the labels in the user's account.
- *
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-function listLabels(auth) {
+function getRecentEmailId(auth) {
   const gmail = google.gmail({ version: "v1", auth });
-  gmail.users.labels.list(
-    {
-      userId: "me"
-    },
-    (err, res) => {
-      if (err) return console.log("The API returned an error: " + err);
-      const labels = res.data.labels;
-      if (labels.length) {
-        console.log("Labels:");
-        labels.forEach(label => {
-          console.log(`- ${label.name}`);
-        });
-      } else {
-        console.log("No labels found.");
-      }
-    }
-  );
-}
-/**
- * Get the recent email from your Gmail account
- *
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-
-function getRecentEmail(auth) {
-  // Only get the recent email - 'maxResults' parameter
-  const gmail = google.gmail({ version: "v1", auth });
-  gmail.users.messages.list(
-    { auth: auth, userId: "me", maxResults: 1 },
-    function(err, response) {
-      if (err) {
-        console.log("The API returned an error: " + err);
-        return;
-      }
-
-      // Get the message id which we will need to retreive tha actual message next.
-      var message_id = response["data"]["messages"][0]["id"];
-      //console.log(message_id);
-      // Retreive the actual message using the message id
-      gmail.users.messages.get(
-        { auth: auth, userId: "me", id: message_id, format: "full" },
-        function(err, response) {
-          if (err) {
-            console.log("The API returned an error: " + err);
-            return;
-          }
-          var extractField = function(json, fieldName) {
-            return response["data"].payload.headers.filter(function(header) {
-              
-              return header.name === fieldName;
-            })[0].value;
-          };
-          var date = extractField(response, "Date");
-          var from = extractField(response, "From");
-          var subject = extractField(response, "Subject");
-        
-          console.log(date);
-          console.log(from);
-          console.log(subject);
-
-
-          var parts = [response.data.payload];
-
-          while (parts.length) {
-            var part = parts.shift();
-            if (part.parts) {
-              parts = parts.concat(part.parts);
-            }
-
-            if (part.mimeType === "text/html") {
-              var decodedPart = decodeURIComponent(
-                escape(
-                  atob(part.body.data.replace(/\-/g, "+").replace(/\_/g, "/"))
-                )
-              );
-
-              var text = htmlToText.fromString(decodedPart, {
-                wordwrap: 130
-              });
-              console.log(text);
-            }
-          }          
+  return new Promise((resolve, reject) => {
+    gmail.users.messages.list(
+      { auth: auth, userId: "me", maxResults: 1 },
+      (err, response) => {
+        if (err) {
+          console.log("The API returned an error: " + err);
+          return reject(err);
         }
-      );
-    }
-  );
+
+        if (!response.data) {
+          return reject("no data");
+        }
+
+        if (!response.data.messages && !response.data.messages.length) {
+          return reject("no messages");
+        }
+        resolve(response["data"]["messages"][0]["id"]);
+        // console.log(response["data"]["messages"][0]["id"]);
+      }
+    );
+  });
 }
+
+function getRecentEmail(message_id, auth) {
+  const gmail = google.gmail({ version: "v1", auth });
+
+  return new Promise((resolve, reject) => {
+    gmail.users.messages.get(
+      { auth: auth, userId: "me", id: message_id, format: "full" },
+      (err, response) => {
+        if (err) {
+          console.log("The API returned an error: " + err);
+          return reject(err);
+        }
+        if (!response.data) {
+          return reject("no data");
+        }
+        resolve(response);
+        // parseEmail(response);
+      }
+    );
+  });
+}
+
+async function readMessage(auth) {
+  try {
+    const emailId = await getRecentEmailId(auth);
+    console.log("emailId: ", emailId);
+    const alert = await getRecentEmail(emailId, auth);
+    // console.log("ALERT AWAIT: ------", alert);
+    return await alert;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function parseEmail(response) {
+  var extractField = function(json, fieldName) {
+    return response["data"].payload.headers.filter(function(header) {
+      return header.name === fieldName;
+    })[0].value;
+  };
+
+  var date = extractField(response, "Date");
+  var from = extractField(response, "From");
+  var subject = extractField(response, "Subject");
+
+  var parts = [response.data.payload];
+
+  while (parts.length) {
+    var part = parts.shift();
+    if (part.parts) {
+      parts = parts.concat(part.parts);
+    }
+
+    if (part.mimeType === "text/html") {
+      var decodedPart = decodeURIComponent(
+        escape(atob(part.body.data.replace(/\-/g, "+").replace(/\_/g, "/")))
+      );
+      var message = htmlToText.fromString(decodedPart, {
+        wordwrap: 130
+      });
+
+      var alert = new Alert();
+      alert.date = date;
+      alert.from = from;
+      alert.subject = subject;
+      alert.message = message;
+
+      console.log("LINHA 151:", alert);
+
+      return alert;
+    }
+  }
+}
+
+async function callGetRecentEmailId() {
+  try {
+    var credentials = JSON.parse(readCredentials());
+    var auth = authorize(credentials);
+    const alert = await readMessage(auth);
+    parseEmail(alert);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+callGetRecentEmailId();

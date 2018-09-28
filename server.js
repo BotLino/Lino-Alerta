@@ -1,15 +1,25 @@
+var dotenv = require("dotenv");
+dotenv.load();
+
 var express = require("express"),
   app = express(),
-  port = process.env.PORT || 3000,
+  port = process.env.PORT,
   mongoose = require("mongoose"),
   Alert = require("./api/models/alertModel"), //created model loading here
   bodyParser = require("body-parser");
 
-const server = "ds261332.mlab.com:61332";
-const database = "lino_database";
-const user = "linobot";
-const password = "bggil-lino2018";
+const server = process.env.DBSERVER;
+const database = process.env.DB;
+const user = process.env.DBUSER;
+const password = process.env.DBPASSWORD;
 
+const { error } = dotenv.config();
+if (error) {
+  throw error;
+}
+
+console.log(user);
+console.log(database);
 console.log(
   `mongodb://${user}:${password}@${server}/${database}?authMechanism=MONGODB-CR`
 );
