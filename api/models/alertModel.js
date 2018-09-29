@@ -1,7 +1,8 @@
 "use strict";
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-var AlertSchema = new Schema({
+
+let AlertSchema = new Schema({
   date: {
     type: String
   },
@@ -16,8 +17,4 @@ var AlertSchema = new Schema({
   }
 });
 
-var Alert = mongoose.model("Alert", AlertSchema);
-
-module.exports = {
-  Alert: Alert
-};
+module.exports = mongoose.model("Alert", AlertSchema);

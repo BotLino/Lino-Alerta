@@ -4,7 +4,7 @@ const readline = require("readline");
 const { google } = require("googleapis");
 global.atob = require("atob");
 var htmlToText = require("html-to-text");
-var Alert = require("../models/alertModel").Alert;
+var AlertModel = require("../models/alertModel");
 
 const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 const TOKEN_PATH = "./api/resources/token.json";
@@ -123,6 +123,7 @@ async function readMessage(auth) {
 }
 
 function parseEmail(response) {
+  // console.log(response);
   var extractField = function(json, fieldName) {
     return response["data"].payload.headers.filter(function(header) {
       return header.name === fieldName;
@@ -131,6 +132,10 @@ function parseEmail(response) {
 
   var date = extractField(response, "Date");
   var from = extractField(response, "From");
+  var regExp = /<(.*?)>/;
+  var matches = regExp.exec(from);
+  var emailFrom = matches[1];
+
   var subject = extractField(response, "Subject");
 
   var parts = [response.data.payload];
@@ -149,12 +154,12 @@ function parseEmail(response) {
         wordwrap: 130
       });
 
-      var alert = new Alert();
-      alert.date = date;
-      alert.from = from;
-      alert.subject = subject;
-      alert.message = message;
-
+      var alert = new AlertModel({
+        date: date,
+        from: emailFrom,
+        subject: subject,
+        message: message
+      });
       return alert;
     }
   }
@@ -166,14 +171,14 @@ async function callGetRecentEmailId() {
     var auth = authorize(credentials);
     const alert = await readMessage(auth);
     const result = await parseEmail(alert);
-    await console.log("result :", result);
+    // await console.log("result :", result);
     return await result;
   } catch (e) {
     console.log(e);
   }
 }
 
-callGetRecentEmailId();
+// callGetRecentEmailId();
 
 module.exports = {
   callGetRecentEmailId: callGetRecentEmailId,
