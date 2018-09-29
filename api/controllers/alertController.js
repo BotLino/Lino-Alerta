@@ -113,7 +113,7 @@ function getRecentEmail(message_id, auth) {
 async function readMessage(auth) {
   try {
     const emailId = await getRecentEmailId(auth);
-    console.log("emailId: ", emailId);
+    // console.log("emailId: ", emailId);
     const alert = await getRecentEmail(emailId, auth);
     // console.log("ALERT AWAIT: ------", alert);
     return await alert;
@@ -134,7 +134,7 @@ function parseEmail(response) {
   var from = extractField(response, "From");
   var regExp = /<(.*?)>/;
   var matches = regExp.exec(from);
-  var emailFrom = matches[1];
+  var email = matches[1];
 
   var subject = extractField(response, "Subject");
 
@@ -156,7 +156,7 @@ function parseEmail(response) {
 
       var alert = new AlertModel({
         date: date,
-        from: emailFrom,
+        email: email,
         subject: subject,
         message: message
       });
@@ -171,7 +171,6 @@ async function callGetRecentEmailId() {
     var auth = authorize(credentials);
     const alert = await readMessage(auth);
     const result = await parseEmail(alert);
-    // await console.log("result :", result);
     return await result;
   } catch (e) {
     console.log(e);

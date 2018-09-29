@@ -6,7 +6,10 @@ let AlertSchema = new Schema({
   date: {
     type: String
   },
-  from: {
+  name: {
+    type: String
+  },
+  email: {
     type: String
   },
   subject: {

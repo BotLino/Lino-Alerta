@@ -1,24 +1,43 @@
 "use strict";
 module.exports = function(app) {
   var alert = require("../controllers/alertController");
-  var notifierController = require("../controllers/notifierController");
   var NotifierModel = require("../models/notifierModel");
   var AlertModel = require("../models/alertModel");
+  var NotifierController = require("../controllers/notifierController");
 
-  var email = "icarooliv@gmail.com";
-
-  app.get("/test", async (req, res, next) => {
+  app.get("/newAlert", async (req, res, next) => {
     try {
       var newAlert = new AlertModel();
       newAlert = await alert.callGetRecentEmailId();
-      await console.log("newalert:------------", newAlert.from);
-      res.json(newAlert);
+      var result = "";
+      var name = "";
+      await NotifierModel.findOne({
+        email: newAlert.email
+      })
+        .then(doc => {
+          result = doc;
+        })
+        .catch(err => {
+          res.status(500).json(err);
+        });
+      try {
+        if (result) {
+          name = result.name;
+          newAlert.name = name;
+          await console.log("New Message sent: \n", newAlert);
+          await res.json(newAlert);
+        } else {
+          res.status(401).json("Forbidden");
+        }
+      } catch (e) {
+        console.log(e);
+      }
     } catch (e) {
       next(e);
     }
   });
 
-  app.post("/new", (req, res) => {
+  app.post("/newUser", (req, res) => {
     if (!req.body) {
       return res.status(400).send("Request body is missing");
     }
@@ -27,12 +46,9 @@ module.exports = function(app) {
       return res.status(400).send("Request body is missing");
     }
 
-    // let user = {
-    //   name: 'firstname lastname',
-    //   email: 'email@gmail.com'
-    // }
     console.log(req.body);
-    let model = new NotifierModel(req.body);
+
+    var model = new NotifierModel(req.body);
     model
       .save()
       .then(doc => {
@@ -49,16 +65,8 @@ module.exports = function(app) {
   app.get("/getUser", (req, res) => {
     if (!req.query.email) {
       return res.status(400).send("Missing URL parameter: email");
+    } else {
+      NotifierController.getUserByEmail(req.query.email, res);
     }
-
-    NotifierModel.findOne({
-      email: req.query.email
-    })
-      .then(doc => {
-        res.json(doc);
-      })
-      .catch(err => {
-        res.status(500).json(err);
-      });
   });
 };
