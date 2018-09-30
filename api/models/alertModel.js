@@ -3,20 +3,30 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 let AlertSchema = new Schema({
+  idEmail: {
+    type: String,
+    unique: true,
+    required: true
+  },
   date: {
-    type: String
+    type: String,
+    required: true
   },
   name: {
-    type: String
+    type: String,
+    required: true
   },
   email: {
-    type: String
+    type: String,
+    required: true
   },
   subject: {
-    type: String
+    type: String,
+    required: true
   },
   message: {
-    type: String
+    type: String,
+    required: true
   }
 });
 

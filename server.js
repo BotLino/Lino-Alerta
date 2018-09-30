@@ -16,8 +16,6 @@ const { error } = dotenv.config();
 if (error) {
   throw error;
 }
-console.log(user);
-console.log(database);
 
 mongoose.Promise = global.Promise;
 

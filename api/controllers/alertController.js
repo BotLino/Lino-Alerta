@@ -123,7 +123,6 @@ async function readMessage(auth) {
 }
 
 function parseEmail(response) {
-  // console.log(response);
   var extractField = function(json, fieldName) {
     return response["data"].payload.headers.filter(function(header) {
       return header.name === fieldName;
@@ -155,6 +154,7 @@ function parseEmail(response) {
       });
 
       var alert = new AlertModel({
+        idEmail: response["data"]["id"],
         date: date,
         email: email,
         subject: subject,
@@ -171,6 +171,7 @@ async function callGetRecentEmailId() {
     var auth = authorize(credentials);
     const alert = await readMessage(auth);
     const result = await parseEmail(alert);
+    // await console.log(result);
     return await result;
   } catch (e) {
     console.log(e);

@@ -24,8 +24,19 @@ module.exports = function(app) {
         if (result) {
           name = result.name;
           newAlert.name = name;
-          await console.log("New Message sent: \n", newAlert);
-          await res.json(newAlert);
+          await newAlert
+            .save()
+            .then(async doc => {
+              if (!doc || doc.length === 0) {
+                return res.status(500).send(doc);
+              }
+              await console.log("New Message sent: \n", newAlert);
+              await res.json(newAlert);
+              res.status(201).send(doc);
+            })
+            .catch(err => {
+              res.status(404).json("No new messages found");
+            });
         } else {
           res.status(401).json("Forbidden");
         }
