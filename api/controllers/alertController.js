@@ -15,13 +15,24 @@ function readCredentials() {
     var content = fs.readFileSync(CREDENTIALS_PATH, err => {
       if (err) return console.log("Error loading client secret file:", err);
     });
-    return content;
+    return JSON.parse(content);
   } catch (e) {
     return console.log(e);
   }
 }
 
-function authorize(credentials) {
+function readToken() {
+  try {
+    var token = fs.readFileSync(TOKEN_PATH, err => {
+      if (err) return getNewToken(oAuth2Client);
+    });
+    return JSON.parse(token);
+  } catch (e) {
+    return console.log(e);
+  }
+}
+
+function authorize(credentials, token) {
   try {
     const { client_secret, client_id, redirect_uris } = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(
@@ -29,11 +40,7 @@ function authorize(credentials) {
       client_secret,
       redirect_uris[0]
     );
-
-    var tkn = fs.readFileSync(TOKEN_PATH, err => {
-      if (err) return getNewToken(oAuth2Client);
-    });
-    oAuth2Client.setCredentials(JSON.parse(tkn));
+    oAuth2Client.setCredentials(token);
     return oAuth2Client;
   } catch (e) {
     return console.log(e);
@@ -167,11 +174,12 @@ function parseEmail(response) {
 
 async function callGetRecentEmailId() {
   try {
-    var credentials = JSON.parse(readCredentials());
-    var auth = authorize(credentials);
+    var credentials = readCredentials();
+    var token = readToken();
+    var auth = authorize(credentials, token);
     const alert = await readMessage(auth);
     const result = await parseEmail(alert);
-    // await console.log(result);
+    await console.log(result);
     return await result;
   } catch (e) {
     console.log(e);
@@ -181,6 +189,7 @@ async function callGetRecentEmailId() {
 // callGetRecentEmailId();
 
 module.exports = {
+  readToken: readToken,
   callGetRecentEmailId: callGetRecentEmailId,
   readCredentials: readCredentials,
   parseEmail: parseEmail,
