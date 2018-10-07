@@ -25,7 +25,8 @@ O servidor estará ouvindo na porta  ```http:localhost:3000```
 ## Endpoints
 ### ```/newAlert```
 
-Objetivo: verificar se existe uma
+Objetivo: verificar se existe uma nova mensagem.
+
 Verbo: ```GET```
 
 | Parâmetros de entrada | Descrição |
