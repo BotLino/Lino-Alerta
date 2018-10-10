@@ -32,7 +32,7 @@ module.exports = function(app) {
               }
               await console.log("New Message sent: \n", newAlert);
               await res.json(newAlert);
-              res.status(201).send(doc);
+              res.status(200).send(doc);
             })
             .catch(err => {
               res.status(404).json("No new messages found");
