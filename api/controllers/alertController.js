@@ -10,9 +10,9 @@ const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 const TOKEN_PATH = "./api/resources/token.json";
 const CREDENTIALS_PATH = "./api/resources/credentials.json";
 
-function readCredentials() {
+function readCredentials(path) {
   try {
-    var content = fs.readFileSync(CREDENTIALS_PATH, err => {
+    var content = fs.readFileSync(path, err => {
       if (err) return console.log("Error loading client secret file:", err);
     });
     return JSON.parse(content);
@@ -174,19 +174,20 @@ function parseEmail(response) {
 
 async function callGetRecentEmailId() {
   try {
-    var credentials = readCredentials();
+    var path = "./api/resources/credentials.json";
+    var credentials = readCredentials(path);
     var token = readToken();
     var auth = authorize(credentials, token);
     const alert = await readMessage(auth);
     const result = await parseEmail(alert);
-    await console.log(result);
+    // await console.log(result);
     return await result;
   } catch (e) {
     console.log(e);
   }
 }
 
-// callGetRecentEmailId();
+callGetRecentEmailId();
 
 module.exports = {
   readToken: readToken,
