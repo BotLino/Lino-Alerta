@@ -56,6 +56,7 @@ Verbo: ```GET```
 | :------------: | :------------: | :-------: |
 | ```response``` | ``` string ``` | Forbidden |
 
+```401```: quando a requisição é feita por um usuário não autenticado
 
 ### ```/newUser```
 Verbo: ```POST```
@@ -68,9 +69,16 @@ Verbo: ```POST```
 ### ```/getUser```
 Verbo: ```GET```
 
-| Parâmetros de entrada | Tipo           | Descrição        |
-| :-------------------: | :------------: | :--------------: |
-| ```email```           | ``` string ``` | Email do usuário |
+| Parâmetros de entrada na URL | Tipo           | Descrição        |
+| :--------------------------: | :------------: | :--------------: |
+| ```email```                  | ``` string ``` | Email do usuário |
+
+
+Exemplo: 
+
+Parâmetro de entrada: ```user@email.com```
+
+URL: localhost:3000/getUser?**email=user@email**.com
 
 
 | Saída       | Tipo           | Descrição        |
@@ -81,5 +89,6 @@ Verbo: ```GET```
 
 ## Executando testes
 
-Para executar os testes, na raiz do projeto execute ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000".
-Será gerado um *report* que poderá ser visualizado em: ```coverage/lcov-report/index.html```.
+Para executar os testes, na raiz do projeto execute ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000".```
+Será gerado um *report* que poderá ser visualizado em: ```coverage/lcov-report/index.html``` .
+
