@@ -46,34 +46,40 @@ Verbo: ```GET```
 
 ```404```: quando não é encontrada uma mensagem nova
 
-| Saída         | Tipo           | Descrição          |
-| :-----------: | :------------: | :----------------: |
-| ```response```    | ``` string ``` | No new messages found      |
+| Saída          | Tipo           | Descrição             |
+| :------------: | :------------: | :-------------------: |
+| ```response``` | ``` string ``` | No new messages found |
 
 ```401```: quando a requisição é feita por um usuário não autenticado
 
-| Saída         | Tipo           | Descrição          |
-| :-----------: | :------------: | :----------------: |
-| ```response```    | ``` string ``` | Forbidden      |
+| Saída          | Tipo           | Descrição |
+| :------------: | :------------: | :-------: |
+| ```response``` | ``` string ``` | Forbidden |
 
 
 ### ```/newUser```
 Verbo: ```POST```
 
-| Parâmetros de entrada | Tipo           | Descrição            |
-| :-------------------: | :------------: | :------------------: |
-| ```name```            | ``` string ``` | Nome do novo remente |
+| Parâmetros de entrada | Tipo           | Descrição             |
+| :-------------------: | :------------: | :-------------------: |
+| ```name```            | ``` string ``` | Nome do novo remente  |
 | ```email```           | ``` string ``` | Email do novo remente |
 
 ### ```/getUser```
 Verbo: ```GET```
 
-| Parâmetros de entrada | Tipo           | Descrição            |
-| :-------------------: | :------------: | :------------------: |
+| Parâmetros de entrada | Tipo           | Descrição        |
+| :-------------------: | :------------: | :--------------: |
 | ```email```           | ``` string ``` | Email do usuário |
 
 
-| Saída | Tipo           | Descrição            |
-| :-------------------: | :------------: | :------------------: |
-| ```name```            | ``` string ``` | Nome do usuário |
-| ```email```           | ``` string ``` | Email do usuário |
+| Saída       | Tipo           | Descrição        |
+| :---------: | :------------: | :--------------: |
+| ```name```  | ``` string ``` | Nome do usuário  |
+| ```email``` | ``` string ``` | Email do usuário |
+
+
+## Executando testes
+
+Para executar os testes, na raiz do projeto execute ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000".
+Será gerado um *report* que poderá ser visualizado em: ```coverage/lcov-report/index.html```.
