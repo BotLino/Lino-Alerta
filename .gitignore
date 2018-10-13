@@ -2,3 +2,5 @@
 node_modules/
 ./vscode/
 .env
+# Coverage 
+reports\ncoverage\ncoverage/\ncoverage/*\n

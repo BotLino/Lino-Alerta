@@ -46,34 +46,52 @@ Verbo: ```GET```
 
 ```404```: quando não é encontrada uma mensagem nova
 
-| Saída         | Tipo           | Descrição          |
-| :-----------: | :------------: | :----------------: |
-| ```response```    | ``` string ``` | No new messages found      |
+| Saída          | Tipo           | Descrição             |
+| :------------: | :------------: | :-------------------: |
+| ```response``` | ``` string ``` | No new messages found |
 
 ```401```: quando a requisição é feita por um usuário não autenticado
 
-| Saída         | Tipo           | Descrição          |
-| :-----------: | :------------: | :----------------: |
-| ```response```    | ``` string ``` | Forbidden      |
+| Saída          | Tipo           | Descrição |
+| :------------: | :------------: | :-------: |
+| ```response``` | ``` string ``` | Forbidden |
 
+```401```: quando a requisição é feita por um usuário não autenticado
 
 ### ```/newUser```
 Verbo: ```POST```
 
-| Parâmetros de entrada | Tipo           | Descrição            |
-| :-------------------: | :------------: | :------------------: |
-| ```name```            | ``` string ``` | Nome do novo remente |
+| Parâmetros de entrada | Tipo           | Descrição             |
+| :-------------------: | :------------: | :-------------------: |
+| ```name```            | ``` string ``` | Nome do novo remente  |
 | ```email```           | ``` string ``` | Email do novo remente |
 
 ### ```/getUser```
 Verbo: ```GET```
 
-| Parâmetros de entrada | Tipo           | Descrição            |
-| :-------------------: | :------------: | :------------------: |
-| ```email```           | ``` string ``` | Email do usuário |
+| Parâmetros de entrada na URL | Tipo           | Descrição        |
+| :--------------------------: | :------------: | :--------------: |
+| ```email```                  | ``` string ``` | Email do usuário |
 
 
-| Saída | Tipo           | Descrição            |
-| :-------------------: | :------------: | :------------------: |
-| ```name```            | ``` string ``` | Nome do usuário |
-| ```email```           | ``` string ``` | Email do usuário |
+Exemplo: 
+
+Parâmetro de entrada: ```user@email.com```
+
+URL: localhost:3000/getUser?**email=user@email**.com
+
+
+| Saída       | Tipo           | Descrição        |
+| :---------: | :------------: | :--------------: |
+| ```name```  | ``` string ``` | Nome do usuário  |
+| ```email``` | ``` string ``` | Email do usuário |
+
+
+## Executando testes
+
+Na raiz do projeto, execute:
+
+ ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000"```
+
+Após a execução, será gerado um *report* que poderá ser visualizado em ```coverage/lcov-report/index.html``` 
+

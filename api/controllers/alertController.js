@@ -1,27 +1,32 @@
 "use strict";
 const fs = require("mz/fs");
-const readline = require("readline");
 const { google } = require("googleapis");
 global.atob = require("atob");
 var htmlToText = require("html-to-text");
 var AlertModel = require("../models/alertModel");
 
-const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
 const TOKEN_PATH = "./api/resources/token.json";
 const CREDENTIALS_PATH = "./api/resources/credentials.json";
 
-function readCredentials() {
+function readCredentials(path) {
   try {
-    var content = fs.readFileSync(CREDENTIALS_PATH, err => {
-      if (err) return console.log("Error loading client secret file:", err);
-    });
-    return content;
+    var content = fs.readFileSync(path);
+    return JSON.parse(content);
   } catch (e) {
     return console.log(e);
   }
 }
 
-function authorize(credentials) {
+function readToken(path) {
+  try {
+    var token = fs.readFileSync(path);
+    return JSON.parse(token);
+  } catch (e) {
+    return console.log(e);
+  }
+}
+
+function authorize(credentials, token) {
   try {
     const { client_secret, client_id, redirect_uris } = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(
@@ -29,39 +34,11 @@ function authorize(credentials) {
       client_secret,
       redirect_uris[0]
     );
-
-    var tkn = fs.readFileSync(TOKEN_PATH, err => {
-      if (err) return getNewToken(oAuth2Client);
-    });
-    oAuth2Client.setCredentials(JSON.parse(tkn));
+    oAuth2Client.setCredentials(token);
     return oAuth2Client;
   } catch (e) {
     return console.log(e);
   }
-}
-
-function getNewToken(oAuth2Client) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: SCOPES
-  });
-  console.log("Authorize this app by visiting this url:", authUrl);
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  rl.question("Enter the code from that page here: ", code => {
-    rl.close();
-    oAuth2Client.getToken(code, (err, token) => {
-      if (err) return console.error("Error retrieving access token", err);
-      oAuth2Client.setCredentials(token);
-      // Store the token to disk for later program executions
-      fs.writeFile(TOKEN_PATH, JSON.stringify(token), err => {
-        if (err) return console.error(err);
-        console.log("Token stored to", TOKEN_PATH);
-      });
-    });
-  });
 }
 
 function getRecentEmailId(auth) {
@@ -74,14 +51,6 @@ function getRecentEmailId(auth) {
           console.log("The API returned an error: " + err);
           return reject(err);
         }
-
-        if (!response.data) {
-          return reject("no data");
-        }
-
-        if (!response.data.messages && !response.data.messages.length) {
-          return reject("no messages");
-        }
         resolve(response["data"]["messages"][0]["id"]);
         // console.log(response["data"]["messages"][0]["id"]);
       }
@@ -89,7 +58,7 @@ function getRecentEmailId(auth) {
   });
 }
 
-function getRecentEmail(message_id, auth) {
+function getRecentEmailData(message_id, auth) {
   const gmail = google.gmail({ version: "v1", auth });
 
   return new Promise((resolve, reject) => {
@@ -114,7 +83,7 @@ async function readMessage(auth) {
   try {
     const emailId = await getRecentEmailId(auth);
     // console.log("emailId: ", emailId);
-    const alert = await getRecentEmail(emailId, auth);
+    const alert = await getRecentEmailData(emailId, auth);
     // console.log("ALERT AWAIT: ------", alert);
     return await alert;
   } catch (e) {
@@ -167,8 +136,9 @@ function parseEmail(response) {
 
 async function callGetRecentEmailId() {
   try {
-    var credentials = JSON.parse(readCredentials());
-    var auth = authorize(credentials);
+    var credentials = readCredentials(CREDENTIALS_PATH);
+    var token = readToken(TOKEN_PATH);
+    var auth = authorize(credentials, token);
     const alert = await readMessage(auth);
     const result = await parseEmail(alert);
     // await console.log(result);
@@ -181,13 +151,13 @@ async function callGetRecentEmailId() {
 // callGetRecentEmailId();
 
 module.exports = {
+  readToken: readToken,
   callGetRecentEmailId: callGetRecentEmailId,
   readCredentials: readCredentials,
   parseEmail: parseEmail,
   readMessage: readMessage,
-  getRecentEmail: getRecentEmail,
+  getRecentEmailData: getRecentEmailData,
   getRecentEmailId: getRecentEmailId,
-  getNewToken: getNewToken,
   authorize: authorize,
   readCredentials: readCredentials
 };
