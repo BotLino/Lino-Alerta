@@ -1,12 +1,14 @@
 "use strict";
+var dotenv = require("dotenv");
+dotenv.load();
 const fs = require("mz/fs");
 const { google } = require("googleapis");
 global.atob = require("atob");
 var htmlToText = require("html-to-text");
 var AlertModel = require("../models/alertModel");
 
-const TOKEN_PATH = "./api/resources/token.json";
-const CREDENTIALS_PATH = "./api/resources/credentials.json";
+const TOKEN_PATH = process.env.TOKEN_PATH;
+const CREDENTIALS_PATH = process.env.CREDENTIALS_PATH;
 
 function readCredentials(path) {
   try {
@@ -141,14 +143,14 @@ async function callGetRecentEmailId() {
     var auth = authorize(credentials, token);
     const alert = await readMessage(auth);
     const result = await parseEmail(alert);
-    // await console.log(result);
+    await console.log(result);
     return await result;
   } catch (e) {
     console.log(e);
   }
 }
 
-// callGetRecentEmailId();
+callGetRecentEmailId();
 
 module.exports = {
   readToken: readToken,
