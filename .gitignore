@@ -1,6 +1,6 @@
 .DS_Store
 node_modules/
-./vscode/
+.vscode/
 .env
 # Coverage 
 reports\ncoverage\ncoverage/\ncoverage/*\n
