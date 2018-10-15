@@ -91,7 +91,7 @@ URL: localhost:3000/getUser?**email=user@email**.com
 
 Na raiz do projeto, execute:
 
- ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000"```
+ ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000```
 
 Após a execução, será gerado um *report* que poderá ser visualizado em ```coverage/lcov-report/index.html``` 
 
