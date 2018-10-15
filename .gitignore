@@ -1,1 +1,9 @@
 .DS_Store
+node_modules/
+.vscode/
+.env
+# Coverage 
+reports\ncoverage\ncoverage/\ncoverage/*\n
+coverage/
+resources/
+package-lock.json
