@@ -14,9 +14,11 @@ Você precisa ter o *npm* e o Node.js instalados.
 ### Dependências
 Dentro do diretório raiz:
 
-* crie um arquivo chamado ```.env``` e inclua suas variáveis de ambiente (keys, tokens etc) lá.
+* crie um arquivo chamado ```.env``` e inclua suas variáveis de ambiente (keys, paths etc) lá.
 
-* execute: ```$ npm install```
+* na raiz, crie um diretório chamado ```resources``` e inclua seus arquivos de ```credentials.json``` e ```token.json```.
+
+* execute: ```$ npm install --save```
 
 * finalmente, para iniciar o servidor:  ```$ npm start```
 
