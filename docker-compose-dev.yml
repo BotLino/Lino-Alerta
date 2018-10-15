@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+    gmail_alert:
+        build: .
+        ports:
+            - 5003:5003
+        volumes:
+            - .:/Lino-Alerta
+        depends_on:
+            - mongo_alert
+
+    mongo_alert:
+        image: mongo:latest
+        command: mongod --port 27009
+        ports:
+            - 27009:27009
+        volumes:
+            - /l/mongo_alert/alert_db:/data/db
