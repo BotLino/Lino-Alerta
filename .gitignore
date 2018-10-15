@@ -4,3 +4,6 @@ node_modules/
 .env
 # Coverage 
 reports\ncoverage\ncoverage/\ncoverage/*\n
+coverage/
+resources/
+package-lock.json
