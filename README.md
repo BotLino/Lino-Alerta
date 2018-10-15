@@ -14,9 +14,11 @@ Você precisa ter o *npm* e o Node.js instalados.
 ### Dependências
 Dentro do diretório raiz:
 
-* crie um arquivo chamado ```.env``` e inclua suas variáveis de ambiente (keys, tokens etc) lá.
+* crie um arquivo chamado ```.env``` e inclua suas variáveis de ambiente (keys, paths etc) lá.
 
-* execute: ```$ npm install```
+* na raiz, crie um diretório chamado ```resources``` e inclua seus arquivos de ```credentials.json``` e ```token.json```.
+
+* execute: ```$ npm install --save```
 
 * finalmente, para iniciar o servidor:  ```$ npm start```
 
@@ -91,7 +93,7 @@ URL: localhost:3000/getUser?**email=user@email**.com
 
 Na raiz do projeto, execute:
 
- ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000"```
+ ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000```
 
 Após a execução, será gerado um *report* que poderá ser visualizado em ```coverage/lcov-report/index.html``` 
 
