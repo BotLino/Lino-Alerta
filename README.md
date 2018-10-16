@@ -8,6 +8,26 @@ Também é possível cadastrar um novo usuário ou buscar por email um usuário 
 
 ## Como utilizar?
 
+## Ambiente de desenvolvimento
+
+Para subir o ambiente de desenvolvimento, você deve ter o [docker](https://docs.docker.com/install/#supported-platforms) e o [docker-compose](https://docs.docker.com/compose/install/#install-compose) instalados.
+
+Após a instalação de ambos, caso seja a primeira vez que o ambiente é usado ou quando realiza alguma alteração no arquivo ```Dockerfile```, execute:
+
+``` sudo docker-compose -f docker-compose-dev.yml up --build ```
+
+Caso contrário, após ter feito o build anteriormente, mas sem realizar alterações no ```Dockerfile```, use:
+
+``` sudo docker-compose -f docker-compose-dev.yml up ```
+
+Para acessar o container ou do Lino-Alerta ou de seu banco associado, execute:
+
+```sudo docker exec -it <hash_do_container> bash```
+
+O Ambiente está configurado para que a equipe que possua acesso as informações possa alocar o script para popular o banco do Lino-Alerta, além da inserir também o csv disponível com todas as informações dos professores. Caso queira subir o script, entre no container da forma citada anteriormente. Após isso, só executar o arquivo de script.
+
+## Ambiente Local
+
 ###  Pré requisitos
 Você precisa ter o *npm* e o Node.js instalados.
 
@@ -76,7 +96,7 @@ Verbo: ```GET```
 | ```email```                  | ``` string ``` | Email do usuário |
 
 
-Exemplo: 
+Exemplo:
 
 Parâmetro de entrada: ```user@email.com```
 
@@ -95,5 +115,4 @@ Na raiz do projeto, execute:
 
  ```$ node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000```
 
-Após a execução, será gerado um *report* que poderá ser visualizado em ```coverage/lcov-report/index.html``` 
-
+Após a execução, será gerado um *report* que poderá ser visualizado em ```coverage/lcov-report/index.html```

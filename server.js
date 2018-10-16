@@ -20,7 +20,7 @@ if (error) {
 mongoose.Promise = global.Promise;
 
 mongoose.connect(
-  `mongodb://${user}:${password}@${server}/${database}?authSource=${database}&w=1`,
+  `mongodb://${server}/${database}?authSource=${database}&w=1`,
   {
     useCreateIndex: true,
     useNewUrlParser: true
