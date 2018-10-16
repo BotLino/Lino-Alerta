@@ -1,14 +1,19 @@
 FROM node:8
 
-WORKDIR /Lino-Alerta
+RUN apt-get -y upgrade && \
+    apt-get -y update && \
+    apt-get -y install python3 && \
+    apt-get -y install python3-pip && \
+    pip3 install pymongo
+
+RUN npm install && \
+    npm install googleapis
 
 COPY package*.json ./
 
-RUN npm install
+COPY . /Lino-Alerta
 
-RUN npm install googleapis
-
-COPY . .
+WORKDIR /Lino-Alerta
 
 EXPOSE 5003
 
