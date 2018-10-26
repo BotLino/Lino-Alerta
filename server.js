@@ -7,10 +7,7 @@ var express = require("express"),
   mongoose = require("mongoose"),
   bodyParser = require("body-parser");
 
-const server = process.env.DBSERVER;
-const database = process.env.DB;
-const user = process.env.DBUSER;
-const password = process.env.DBPASSWORD;
+const URI = process.env.URI;
 
 const { error } = dotenv.config();
 if (error) {
@@ -20,7 +17,7 @@ if (error) {
 mongoose.Promise = global.Promise;
 
 mongoose.connect(
-  `mongodb://${server}/${database}?authSource=${database}&w=1`,
+  URI,
   {
     useCreateIndex: true,
     useNewUrlParser: true
