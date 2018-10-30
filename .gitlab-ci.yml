@@ -12,6 +12,8 @@ unit test:
     - node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000
   only:
     - /master/
+    - /ContinuousDeploy/
+  environment: test
 
 build alert:
   image: docker:latest
@@ -40,3 +42,4 @@ deploy lino-alerta:
             --rancher-url $RANCHER_URL"
   only:
     - /master/
+    - /ContinuousDeploy/

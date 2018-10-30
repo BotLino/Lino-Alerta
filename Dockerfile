@@ -7,6 +7,6 @@ WORKDIR /Lino-Alerta
 RUN npm install && \
     npm install googleapis
 
-EXPOSE 8080
+EXPOSE 5014
 
-CMD ["node", "api/controllers/alertController.js"]
+CMD ["npm", "start"]

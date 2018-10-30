@@ -6,8 +6,8 @@ var AlertController = require("../api/controllers/alertController");
 
 chai.use(chaiHttp);
 
-const TOKEN_PATH = "./api/resources/token.json";
-const CREDENTIALS_PATH = "./api/resources/credentials.json";
+var TOKEN_PATH = require("../resources/token.js");
+var CREDENTIALS_PATH = require("../resources/credentials.js");
 
 console.log = function() {};
 
@@ -24,7 +24,9 @@ describe("Alert Controller", () => {
   });
   it("should return an authorized Oauth2Client object", async () => {
     var credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
+    await console.log("**************************************************" + credentials)
     var token = await AlertController.readToken(TOKEN_PATH);
+    await console.log("**************************************************" + token)
     var oAuth2Client = await AlertController.authorize(credentials, token);
     await assert.exists(oAuth2Client);
   });

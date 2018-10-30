@@ -3,7 +3,7 @@ dotenv.load();
 
 var express = require("express"),
   app = express(),
-  port = process.env.PORT,
+  port = 5014,
   mongoose = require("mongoose"),
   bodyParser = require("body-parser");
 

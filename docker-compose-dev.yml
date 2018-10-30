@@ -10,15 +10,20 @@ services:
         depends_on:
             - mongo_alert
         environment:
-          - URI=//mongodb://ds041831.mlab.com:41831/api-alertas?authSource=api-alertas&w=1
-          - CLIENT_ID=239258843822-cgk0toiq0bjuga3213t1qm0vhgh5gjh2.apps.googleusercontent.com
-          - PROJECT_ID=lino-alerta-1537294243392
-          - AUTH_URI=https://accounts.google.com/o/oauth2/auth
-          - TOKEN_URI=https://www.googleapis.com/oauth2/v3/token
-          - AUTH_PROVIDER=https://www.googleapis.com/oauth2/v1/certs
-          - CLIENT_SECRET=zq6zFOwFxOnRJn8bekVfJv_7
-          - REDIRECT_URIS_ZERO=["urn:ietf:wg:oauth:2.0:oob", "http://localhost"]
-          - REDIRECT_URIS_ONE=["urn:ietf:wg:oauth:2.0:oob", "http://localhost"]
+          - URI=${URI}
+          - CLIENT_ID=${CLIENT_ID}
+          - PROJECT_ID=${PROJECT_ID}
+          - AUTH_URI=${AUTH_URI}
+          - TOKEN_URI=${TOKEN_URI}
+          - AUTH_PROVIDER=${AUTH_PROVIDER}
+          - CLIENT_SECRET=${CLIENT_SECRET}
+          - REDIRECT_URIS_ONE=${REDIRECT_URIS_ONE}
+          - REDIRECT_URIS_ZERO=${REDIRECT_URIS_ZERO}
+          - ACCESS_TOKEN=${ACCESS_TOKEN}
+          - REFRESH_TOKEN=${REFRESH_TOKEN}
+          - SCOPE=${SCOPE}
+          - TOKEN_TYPE=${TOKEN_TYPE}
+          - EXPIRY_DATE=${EXPIRY_DATE}
 
     mongo_alert:
         image: mongo:latest

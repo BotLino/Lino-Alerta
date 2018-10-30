@@ -6,3 +6,4 @@ node_modules/
 reports\ncoverage\ncoverage/\ncoverage/*\n
 coverage/
 package-lock.json
+npm-debug.log

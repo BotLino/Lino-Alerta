@@ -12,4 +12,3 @@ module.exports = {
     redirect_uris: [process.env.REDIRECT_URIS_ZERO, process.env.REDIRECT_URIS_ONE]
   }
 }
-// `mongodb://${server}/${database}?authSource=${database}&w=1`,
