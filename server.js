@@ -9,9 +9,14 @@ var express = require("express"),
 
 const URI = process.env.URI;
 
-const { error } = dotenv.config();
-if (error) {
-  throw error;
+const result = require('dotenv').config({silent: true});
+
+if (result.error) {
+  if (result.error.code === "ENOENT") {
+    console.info("expected this error because we are in production without a .env file")
+  } else {
+    throw result.error
+  }
 }
 
 mongoose.Promise = global.Promise;
