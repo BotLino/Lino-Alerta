@@ -1,0 +1,43 @@
+stages:
+  - test
+  - build
+  - deploy
+
+unit test:
+  image: node:8
+  stage: test
+  before_script:
+    - npm install
+  script:
+    - node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- ./test/* --recursive --timeout 30000
+  only:
+    - /master/
+  environment: test
+
+build alert:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+    - docker build -t guila/lino-alerta .
+  script:
+    - docker push guila/lino-alerta
+  only:
+    - /master/
+    - /ContinuousDeploy/
+
+deploy lino-alerta:
+  image: cdrx/rancher-gitlab-deploy
+  stage: deploy
+  script:
+    - "upgrade
+            --service alerta-gmail
+            --environment $RANCHER_ENVIRONMENT
+            --stack $RANCHER_STACK
+            --rancher-key $RANCHER_ACCESS_KEY
+            --rancher-secret $RANCHER_SECRET_KEY
+            --rancher-url $RANCHER_URL"
+  only:
+    - /master/
