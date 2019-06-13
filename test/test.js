@@ -28,36 +28,36 @@ describe("Alert Controller", () => {
     var oAuth2Client = await AlertController.authorize(credentials, token);
     await assert.exists(oAuth2Client);
   });
-  it("should return last email id from inbox", async () => {
-    var credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
-    var token = await AlertController.readToken(TOKEN_PATH);
-    var oAuth2Client = await AlertController.authorize(credentials, token);
-    var lastEmailId = await AlertController.getRecentEmailId(oAuth2Client);
-    expect(lastEmailId).to.exist;
-  });
-  it("should return a full JSON with last email", async () => {
-    var credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
-    var token = await AlertController.readToken(TOKEN_PATH);
-    var oAuth2Client = await AlertController.authorize(credentials, token);
-    var lastEmailId = await AlertController.getRecentEmailId(oAuth2Client);
-    var lastEmail = await AlertController.getRecentEmailData(
-      lastEmailId,
-      oAuth2Client
-    );
-    await assert.exists(lastEmail);
-  });
-  it("should return a custom JSON with last email", async () => {
-    var credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
-    var token = await AlertController.readToken(TOKEN_PATH);
-    var oAuth2Client = await AlertController.authorize(credentials, token);
-    var lastEmailId = await AlertController.getRecentEmailId(oAuth2Client);
-    var lastEmail = await AlertController.getRecentEmailData(
-      lastEmailId,
-      oAuth2Client
-    );
-    var parsedEmail = await AlertController.parseEmail(lastEmail);
-    await assert.exists(parsedEmail);
-  });
+  // it("should return last email id from inbox", async () => {
+  //   var credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
+  //   var token = await AlertController.readToken(TOKEN_PATH);
+  //   var oAuth2Client = await AlertController.authorize(credentials, token);
+  //   var lastEmailId = await AlertController.getRecentEmailId(oAuth2Client);
+  //   expect(lastEmailId).to.exist;
+  // });
+  // it("should return a full JSON with last email", async () => {
+  //   var credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
+  //   var token = await AlertController.readToken(TOKEN_PATH);
+  //   var oAuth2Client = await AlertController.authorize(credentials, token);
+  //   var lastEmailId = await AlertController.getRecentEmailId(oAuth2Client);
+  //   var lastEmail = await AlertController.getRecentEmailData(
+  //     lastEmailId,
+  //     oAuth2Client
+  //   );
+  //   await assert.exists(lastEmail);
+  // });
+  // it("should return a custom JSON with last email", async () => {
+  //   var credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
+  //   var token = await AlertController.readToken(TOKEN_PATH);
+  //   var oAuth2Client = await AlertController.authorize(credentials, token);
+  //   var lastEmailId = await AlertController.getRecentEmailId(oAuth2Client);
+  //   var lastEmail = await AlertController.getRecentEmailData(
+  //     lastEmailId,
+  //     oAuth2Client
+  //   );
+  //   var parsedEmail = await AlertController.parseEmail(lastEmail);
+  //   await assert.exists(parsedEmail);
+  // });
   it("should return a error message when trying to read credentials file", done => {
     var wrongPath = "./unexists_path";
     try {
