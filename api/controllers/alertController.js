@@ -1,13 +1,13 @@
-"use strict";
-var dotenv = require("dotenv");
+const dotenv = require('dotenv');
+
 dotenv.load();
-const fs = require("mz/fs");
-const { google } = require("googleapis");
-global.atob = require("atob");
-var htmlToText = require("html-to-text");
-var AlertModel = require("../models/alertModel");
-var CREDENTIALS_PATH = require("../../resources/credentials.js");
-var TOKEN_PATH = require("../../resources/token.js");
+// const fs = require('mz/fs');
+const { google } = require('googleapis');
+const atob = require('atob');
+const htmlToText = require('html-to-text');
+const AlertModel = require('../models/alertModel');
+const CREDENTIALS_PATH = require('../../resources/credentials.js');
+const TOKEN_PATH = require('../../resources/token.js');
 
 function readCredentials(path) {
   try {
@@ -27,11 +27,11 @@ function readToken(path) {
 
 function authorize(credentials, token) {
   try {
-    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const { clientSecret, clientId, redirectUris } = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(
-      client_id,
-      client_secret,
-      redirect_uris[0]
+      clientId,
+      clientSecret,
+      redirectUris[0],
     );
     oAuth2Client.setCredentials(token);
     return oAuth2Client;
@@ -41,39 +41,43 @@ function authorize(credentials, token) {
 }
 
 function getRecentEmailId(auth) {
-  const gmail = google.gmail({ version: "v1", auth });
+  const gmail = google.gmail({ version: 'v1', auth });
   return new Promise((resolve, reject) => {
     gmail.users.messages.list(
-      { auth: auth, userId: "me", maxResults: 1 },
+      { auth, userId: 'me', maxResults: 1 },
       (err, response) => {
         if (err) {
-          console.log("The API returned an error: " + err);
+          console.log(`The API returned an error: ${err}`);
           return reject(err);
         }
-        resolve(response["data"]["messages"][0]["id"]);
+        resolve(response.data.messages[0].id);
+        return (console.log(response));
         // console.log(response["data"]["messages"][0]["id"]);
-      }
+      },
     );
   });
 }
 
-function getRecentEmailData(message_id, auth) {
-  const gmail = google.gmail({ version: "v1", auth });
+function getRecentEmailData(messageId, auth) {
+  const gmail = google.gmail({ version: 'v1', auth });
 
   return new Promise((resolve, reject) => {
     gmail.users.messages.get(
-      { auth: auth, userId: "me", id: message_id, format: "full" },
+      {
+        auth, userId: 'me', id: messageId, format: 'full',
+      },
       (err, response) => {
         if (err) {
-          console.log("The API returned an error: " + err);
+          console.log(`The API returned an error: ${err}`);
           return reject(err);
         }
         if (!response.data) {
-          return reject("no data");
+          return reject(err);
         }
         resolve(response);
+        return (console.log(response));
         // parseEmail(response);
-      }
+      },
     );
   });
 }
@@ -86,77 +90,75 @@ async function readMessage(auth) {
     // console.log("ALERT AWAIT: ------", alert);
     return await alert;
   } catch (e) {
-    console.error(e);
+    return (console.error(e));
   }
 }
 
 function parseEmail(response) {
-  var extractField = function(json, fieldName) {
-    return response["data"].payload.headers.filter(function(header) {
-      return header.name === fieldName;
-    })[0].value;
-  };
+  const extractField = (json, fieldName) => (
+    response.data.payload.headers.filter(header => header.name === fieldName)[0].value
+  );
 
-  var date = extractField(response, "Date");
-  var from = extractField(response, "From");
-  var regExp = /<(.*?)>/;
-  var matches = regExp.exec(from);
-  var email = matches[1];
+  const date = extractField(response, 'Date');
+  const from = extractField(response, 'From');
+  const regExp = /<(.*?)>/;
+  const matches = regExp.exec(from);
+  const email = matches[1];
 
-  var subject = extractField(response, "Subject");
+  const subject = extractField(response, 'Subject');
 
-  var parts = [response.data.payload];
+  let parts = [response.data.payload];
 
   while (parts.length) {
-    var part = parts.shift();
+    const part = parts.shift();
     if (part.parts) {
       parts = parts.concat(part.parts);
     }
 
-    if (part.mimeType === "text/html") {
-      var decodedPart = decodeURIComponent(
-        escape(atob(part.body.data.replace(/\-/g, "+").replace(/\_/g, "/")))
+    if (part.mimeType === 'text/html') {
+      const decodedPart = decodeURIComponent(
+        escape(atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'))),
       );
-      var message = htmlToText.fromString(decodedPart, {
-        wordwrap: 130
+      const message = htmlToText.fromString(decodedPart, {
+        wordwrap: 130,
       });
 
-      var alert = new AlertModel({
-        idEmail: response["data"]["id"],
-        date: date,
-        email: email,
-        subject: subject,
-        message: message
+      const alert = new AlertModel({
+        idEmail: response.data.id,
+        date,
+        email,
+        subject,
+        message,
       });
       return alert;
     }
   }
+  return (console.log('alert'));
 }
 
 async function callGetRecentEmailId() {
   try {
-    var credentials = readCredentials(CREDENTIALS_PATH);
-    var token = readToken(TOKEN_PATH);
-    var auth = authorize(credentials, token);
+    const credentials = readCredentials(CREDENTIALS_PATH);
+    const token = readToken(TOKEN_PATH);
+    const auth = authorize(credentials, token);
     const alert = await readMessage(auth);
     const result = await parseEmail(alert);
     await console.log(result);
     return await result;
   } catch (e) {
-    console.log(e);
+    return (console.log(e));
   }
 }
 
 callGetRecentEmailId();
 
 module.exports = {
-  readToken: readToken,
-  callGetRecentEmailId: callGetRecentEmailId,
-  readCredentials: readCredentials,
-  parseEmail: parseEmail,
-  readMessage: readMessage,
-  getRecentEmailData: getRecentEmailData,
-  getRecentEmailId: getRecentEmailId,
-  authorize: authorize,
-  readCredentials: readCredentials
+  readToken,
+  callGetRecentEmailId,
+  readCredentials,
+  parseEmail,
+  readMessage,
+  getRecentEmailData,
+  getRecentEmailId,
+  authorize,
 };
