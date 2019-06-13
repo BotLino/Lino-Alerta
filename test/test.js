@@ -1,31 +1,31 @@
-var chai = require("chai");
-var assert = require("chai").assert;
-var chaiHttp = require("chai-http");
-var expect = require("chai").expect;
-var AlertController = require("../api/controllers/alertController");
+const chai = require('chai');
+const { assert } = require('chai');
+const chaiHttp = require('chai-http');
+const { expect } = require('chai');
+const AlertController = require('../api/controllers/alertController');
 
 chai.use(chaiHttp);
 
-var TOKEN_PATH = require("../resources/token.js");
-var CREDENTIALS_PATH = require("../resources/credentials.js");
+const TOKEN_PATH = require('../resources/token.js');
+const CREDENTIALS_PATH = require('../resources/credentials.js');
 
-console.log = function() {};
+console.log = function () {};
 
-describe("Alert Controller", () => {
-  it("should return a JSON credentials file", () => {
-    console.log = function() {};
-    var credentials = AlertController.readCredentials(CREDENTIALS_PATH);
+describe('Alert Controller', () => {
+  it('should return a JSON credentials file', () => {
+    console.log = function () {};
+    const credentials = AlertController.readCredentials(CREDENTIALS_PATH);
     assert.exists(credentials);
     delete console.log;
   });
-  it("should return a JSON token file", function() {
-    var token = AlertController.readToken(TOKEN_PATH);
+  it('should return a JSON token file', () => {
+    const token = AlertController.readToken(TOKEN_PATH);
     assert.exists(token);
   });
-  it("should return an authorized Oauth2Client object", async () => {
-    var credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
-    var token = await AlertController.readToken(TOKEN_PATH);
-    var oAuth2Client = await AlertController.authorize(credentials, token);
+  it('should return an authorized Oauth2Client object', async () => {
+    const credentials = await AlertController.readCredentials(CREDENTIALS_PATH);
+    const token = await AlertController.readToken(TOKEN_PATH);
+    const oAuth2Client = await AlertController.authorize(credentials, token);
     await assert.exists(oAuth2Client);
   });
   // it("should return last email id from inbox", async () => {
@@ -58,8 +58,8 @@ describe("Alert Controller", () => {
   //   var parsedEmail = await AlertController.parseEmail(lastEmail);
   //   await assert.exists(parsedEmail);
   // });
-  it("should return a error message when trying to read credentials file", done => {
-    var wrongPath = "./unexists_path";
+  it('should return a error message when trying to read credentials file', (done) => {
+    const wrongPath = './unexists_path';
     try {
       AlertController.readCredentials(wrongPath);
     } catch (e) {
@@ -68,8 +68,8 @@ describe("Alert Controller", () => {
     }
     done();
   });
-  it("should return a error message when trying to read token file", done => {
-    var wrongPath = "./unexists_path";
+  it('should return a error message when trying to read token file', (done) => {
+    const wrongPath = './unexists_path';
     try {
       AlertController.readToken(wrongPath);
     } catch (e) {
@@ -77,8 +77,8 @@ describe("Alert Controller", () => {
     }
     done();
   });
-  it("should return a error message when trying to authorize user", done => {
-    var wrongPath = "./unexists_path";
+  it('should return a error message when trying to authorize user', (done) => {
+    const wrongPath = './unexists_path';
     try {
       AlertController.authorize(wrongPath, wrongPath);
     } catch (e) {
@@ -86,8 +86,8 @@ describe("Alert Controller", () => {
     }
     done();
   });
-  it("should return a error message when trying to get recent email id", done => {
-    var wrongPath = "./unexists_path";
+  it('should return a error message when trying to get recent email id', (done) => {
+    const wrongPath = './unexists_path';
     try {
       AlertController.getRecentEmailId(wrongPath);
     } catch (e) {
@@ -95,8 +95,8 @@ describe("Alert Controller", () => {
     }
     done();
   });
-  it("should return a error message when trying to get recent email data", done => {
-    var wrongPath = "";
+  it('should return a error message when trying to get recent email data', (done) => {
+    const wrongPath = '';
     try {
       AlertController.getRecentEmailData(wrongPath);
     } catch (e) {
@@ -104,8 +104,8 @@ describe("Alert Controller", () => {
     }
     done();
   });
-  it("should return a error message when trying to read a new message ", done => {
-    var wrongPath = "";
+  it('should return a error message when trying to read a new message ', (done) => {
+    const wrongPath = '';
     try {
       AlertController.readMessage(wrongPath);
     } catch (e) {
@@ -113,8 +113,8 @@ describe("Alert Controller", () => {
     }
     done();
   });
-  it("should return a error message when trying to get a new Email", done => {
-    var wrongPath = "";
+  it('should return a error message when trying to get a new Email', (done) => {
+    const wrongPath = '';
     try {
       AlertController.callGetRecentEmailId(wrongPath);
     } catch (e) {

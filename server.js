@@ -1,21 +1,23 @@
-var dotenv = require("dotenv");
+const dotenv = require('dotenv');
+
 dotenv.load();
 
-var express = require("express"),
-  app = express(),
-  port = 5014,
-  mongoose = require("mongoose"),
-  bodyParser = require("body-parser");
+const express = require('express');
 
-const URI = process.env.URI;
+const app = express();
+const port = 5014;
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
-const result = require('dotenv').config({silent: true});
+const { URI } = process.env;
+
+const result = require('dotenv').config({ silent: true });
 
 if (result.error) {
-  if (result.error.code === "ENOENT") {
-    console.info("expected this error because we are in production without a .env file")
+  if (result.error.code === 'ENOENT') {
+    console.info('expected this error because we are in production without a .env file');
   } else {
-    throw result.error
+    throw result.error;
   }
 }
 
@@ -25,19 +27,20 @@ mongoose.connect(
   URI,
   {
     useCreateIndex: true,
-    useNewUrlParser: true
-  }
+    useNewUrlParser: true,
+  },
 );
 
-var db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var routes = require("./api/routes/routes"); //importing route
-routes(app); //register the route
+const routes = require('./api/routes/routes');
+// importing route
+routes(app); // register the route
 
 app.listen(port);
 
-console.log("Server started on: " + port);
+console.log(`Server started on: ${port}`);
