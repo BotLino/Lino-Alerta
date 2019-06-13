@@ -1,14 +1,15 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 
-let NotifierSchema = new Schema({
+const { Schema } = mongoose;
+
+const NotifierSchema = new Schema({
   name: {
-    type: String
+    type: String,
   },
   email: {
     type: String,
-    unique: true
-  }
+    unique: true,
+  },
 });
 
-module.exports = mongoose.model("Notifier", NotifierSchema);
+module.exports = mongoose.model('Notifier', NotifierSchema);
