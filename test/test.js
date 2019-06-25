@@ -6,8 +6,8 @@ var AlertController = require("../api/controllers/alertController");
 
 chai.use(chaiHttp);
 
-const TOKEN_PATH = "./api/resources/token.json";
-const CREDENTIALS_PATH = "./api/resources/credentials.json";
+var TOKEN_PATH = require("../resources/token.js");
+var CREDENTIALS_PATH = require("../resources/credentials.js");
 
 console.log = function() {};
 

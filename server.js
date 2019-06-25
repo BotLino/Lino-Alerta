@@ -3,24 +3,26 @@ dotenv.load();
 
 var express = require("express"),
   app = express(),
-  port = process.env.PORT,
+  port = 5014,
   mongoose = require("mongoose"),
   bodyParser = require("body-parser");
 
-const server = process.env.DBSERVER;
-const database = process.env.DB;
-const user = process.env.DBUSER;
-const password = process.env.DBPASSWORD;
+const URI = process.env.URI;
 
-const { error } = dotenv.config();
-if (error) {
-  throw error;
+const result = require('dotenv').config({silent: true});
+
+if (result.error) {
+  if (result.error.code === "ENOENT") {
+    console.info("expected this error because we are in production without a .env file")
+  } else {
+    throw result.error
+  }
 }
 
 mongoose.Promise = global.Promise;
 
 mongoose.connect(
-  `mongodb://${server}/${database}?authSource=${database}&w=1`,
+  URI,
   {
     useCreateIndex: true,
     useNewUrlParser: true

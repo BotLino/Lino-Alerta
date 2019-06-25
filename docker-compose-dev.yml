@@ -9,6 +9,21 @@ services:
             - .:/Lino-Alerta
         depends_on:
             - mongo_alert
+        environment:
+          - URI=${URI}
+          - CLIENT_ID=${CLIENT_ID}
+          - PROJECT_ID=${PROJECT_ID}
+          - AUTH_URI=${AUTH_URI}
+          - TOKEN_URI=${TOKEN_URI}
+          - AUTH_PROVIDER=${AUTH_PROVIDER}
+          - CLIENT_SECRET=${CLIENT_SECRET}
+          - REDIRECT_URIS_ONE=${REDIRECT_URIS_ONE}
+          - REDIRECT_URIS_ZERO=${REDIRECT_URIS_ZERO}
+          - ACCESS_TOKEN=${ACCESS_TOKEN}
+          - REFRESH_TOKEN=${REFRESH_TOKEN}
+          - SCOPE=${SCOPE}
+          - TOKEN_TYPE=${TOKEN_TYPE}
+          - EXPIRY_DATE=${EXPIRY_DATE}
 
     mongo_alert:
         image: mongo:latest

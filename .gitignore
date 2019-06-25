@@ -2,8 +2,8 @@
 node_modules/
 .vscode/
 .env
-# Coverage 
+# Coverage
 reports\ncoverage\ncoverage/\ncoverage/*\n
 coverage/
-resources/
 package-lock.json
+npm-debug.log

@@ -6,14 +6,12 @@ const { google } = require("googleapis");
 global.atob = require("atob");
 var htmlToText = require("html-to-text");
 var AlertModel = require("../models/alertModel");
-
-const TOKEN_PATH = process.env.TOKEN_PATH;
-const CREDENTIALS_PATH = process.env.CREDENTIALS_PATH;
+var CREDENTIALS_PATH = require("../../resources/credentials.js");
+var TOKEN_PATH = require("../../resources/token.js");
 
 function readCredentials(path) {
   try {
-    var content = fs.readFileSync(path);
-    return JSON.parse(content);
+    return (path);
   } catch (e) {
     return console.log(e);
   }
@@ -21,8 +19,7 @@ function readCredentials(path) {
 
 function readToken(path) {
   try {
-    var token = fs.readFileSync(path);
-    return JSON.parse(token);
+    return (path);
   } catch (e) {
     return console.log(e);
   }
