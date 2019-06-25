@@ -1,4 +1,7 @@
 # Lino-Alerta
+
+<a href="https://codeclimate.com/github/BotLino/Lino-Alerta/maintainability"><img src="https://api.codeclimate.com/v1/badges/03f0594d67723cff5c1d/maintainability" /></a>
+
 ## Objetivo
 Microsserviço feito com o objetivo de recuperar mensagens enviadas para o email do Lino e encaminhá-los para o Core (Lino Bot).
 
